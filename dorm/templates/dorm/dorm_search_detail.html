@@ -1,0 +1,155 @@
+{% extends 'dorm/base.html' %}
+{% load static %}
+
+{% block head %}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Room Detail</title>
+
+<!-- Bootstrap Core CSS -->
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+<!-- MetisMenu CSS -->
+<link href="{% static 'css/metisMenu.min.css' %}" rel="stylesheet">
+
+<!-- DataTables CSS -->
+<link href="{% static 'css/dataTables.bootstrap.css' %}" rel="stylesheet">
+
+<!-- DataTables Responsive CSS -->
+<link href="{% static 'css/dataTables.responsive.css' %}" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+
+<style>
+    p {
+    	display: inline;
+		width: 40px;
+		height: 10px;
+    }
+    .Searchinput {
+    	display: inline;
+    }
+	.Searchinputs {
+		display: inline;
+		width: 80%;
+		margin: 0 auto;
+	}
+	.Searchinputs input[type=text] {
+		width: 17%;
+		height: 38px;
+		margin: 5px;
+		border: 1px solid #ddd;
+		border-radius: 3px;
+	}
+</style>
+
+{% endblock %}
+
+{% block h1 %}Search View{% endblock %}
+
+{% block content %}
+<div>
+	<div class="col-lg-6" style="position: relative; right: 14px; top: 10px; width: 90%;">
+        <div class="panel panel-default">
+        	<div class="panel-heading">
+                 Content
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+					{% if student_list %}
+					<table class="table table-striped table-bordered table-hover" id="dataTables-example" style="">
+						<thead>
+							<tr>
+								<td>学号</td>
+								<td>姓名</td>
+								<td>性别</td>
+								<td>民族</td>
+								<td>专业</td>
+								<td>班级</td>
+								<td>电话</td>
+								<td>宿舍楼</td>
+								<td>宿舍号</td>
+								<td>教师</td>
+								{% ifequal kind 'dormadmin' %}
+								<td>操作</td>
+								{% endifequal %}
+							</tr>
+						</thead>
+						<tbody>
+							{% for y in student_list %}
+						    <tr class="">
+								<td>{{ y.number }}</td>
+								<td>{{ y.name }}</td>
+								<td>{{ y.sex }}</td>
+								<td>{{ y.nation }}</td>
+							    <td>{{ y.major }}</td>
+							    <td>{{ y.class_grade }}</td>
+								<td>{{ y.phone }}</td>
+								<td>{{ y.room_number.building_number.number }}</td>
+								<td>{{ y.room_number.number }}</td>
+								<td>{{ y.teacher.name }}</td>
+								{% ifequal kind 'dormadmin' %}
+								<td>
+                                    <button class="btn btn-default" style="padding:1px 3px;margin:0px 3px;" onclick="dele(this,{{ forloop.counter }})">
+										<li class="glyphicon glyphicon-remove" style="margin:3px;"></li>
+									</button>   
+								</td>
+								{% endifequal %}
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script src="{% static 'js/metisMenu.min.js' %}"></script>
+
+<!-- DataTables JavaScript -->
+<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'js/dataTables.responsive.js' %}"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+	 $('#dataTables-example').DataTable({
+	   responsive:true,
+	   bLengthChange:true,
+	   aLengthMenu: [1,5,10],
+	 });
+	});
+	function dele(obj, x){
+		var table=document.getElementById("dataTables-example");
+		var number=table.rows[x].cells[0].innerText;
+		window.location.href=""
+        $.ajax({  
+            url: '',  
+            tradiotional: true,
+            data: {number: number, option: "delete"},
+            dataType: "json",  
+            type: "POST",  
+        });  
+	}
+</script>
+{% endblock %}

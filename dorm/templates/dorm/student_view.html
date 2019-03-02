@@ -1,0 +1,257 @@
+{% extends 'dorm/base.html' %}
+{% load static %}
+
+{% block head %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="{% static 'css/metisMenu.min.css' %}" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link href="{% static 'css/dataTables.bootstrap.css' %}" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href="{% static 'css/dataTables.responsive.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+	.Floating-input {
+		display: block;
+		margin: 6px auto;
+		width: 60%;
+		height: 35px;
+		border-radius: 5px;
+		border: 1px solid #d1caca;}
+	p {
+	   display: inline;
+	   position: relative;
+	   left: 20px;
+	   top: 33px;
+	}
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+{% endblock %}
+
+{% block h1 %}Student View{% endblock %}
+
+{% block content %}
+            <div class="row" style="width: 180%">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Student information
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                {% ifequal kind 'teacher' %}
+                                <button class="btn btn-default" data-toggle="modal" data-target="#myModal" style="padding:3px 5px;margin:3px;">
+                            添加
+                            </button>
+                                {% endifequal %}
+                                <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                	<thead>
+                                		<tr>
+                                			<td><a>学号</a></td>
+                                			<td><a>姓名</a></td>
+                                			<td><a>性别</a></td>
+                                			<td><a>民族</a></td>
+                                			<td><a>专业</a></td>
+                                			<td><a>班级</a></td>
+                                			<td><a>电话</a></td>
+                                			<td><a>寝室号</a></td>
+                                			<td><a>宿舍楼</a></td>
+                                			<td><a>教师</a></td>
+                                			{% ifequal kind 'teacher' %}
+                                			<td><a>操作</a></td>
+                                			{% endifequal %}
+                                		</tr>
+                                	</thead>
+                                	<tbody>
+                                		{% for x in student_list %}
+                                		<tr>
+                                			<td id="number">{{ x.number }}</td>
+                                			<td>{{ x.name }}</td>
+                                			<td>{{ x.sex }}</td>
+                                			<td>{{ x.nation }}</td>
+                                			<td>{{ x.major }}</td>
+                                			<td>{{ x.class_grade }}</td>
+                                			<td>{{ x.phone }}</td>
+                                			<td>{{ x.room_number.number }}</td>
+                                			<td>{{ x.room_number.building_number.number }}</td>
+                                			<td>{{ x.teacher.name }}</td>
+                                			{% ifequal kind 'teacher' %}
+                                			<td>
+                                                <button class="btn btn-default" style="padding:1px 3px;margin:0px 3px;" onclick="updata(this,row({{ x.number }}))">
+                                                        <li class="glyphicon glyphicon-pencil" style="margin:3px;"> </li>
+                                                </button>
+                                                <button class="btn btn-default" style="padding:1px 3px;margin:0px 3px;" onclick="dele(this,row({{ x.number }}))">
+													<li class="glyphicon glyphicon-remove" style="margin:3px;"></li>
+												</button>         
+                                            </td>
+                                			{% endifequal %}
+                                		</tr>
+                                		{% endfor %}
+                                	</tbody>
+                                </table>
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" style="width: 500px;">
+                                        <div class="modal-content">
+                                            <form action="" method="post">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                        &times;
+                                                    </button>
+                                                    <h4 class="modal-title" id="myModalLabel">
+                                                        Student Add
+                                                    </h4>
+                                                </div>
+                                                <div class="">
+                                                    <p>学号</p><input type="text" name="number" class="Floating-input">
+                                                    <p>姓名</p><input type="text" name="name" class="Floating-input">
+                                                    <p>性别</p>
+                                                    <select name="sex" class="Floating-input">
+                                                        <option value="男">男</option><option value="女">女</option>
+                                                    </select>
+                                                    <p>民族</p>
+                                                    <select name="nation" class="Floating-input">
+                                                        {% for x in nation_list %}
+                                                        <option value="{{ x }}">{{ x }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <p>专业</p>
+                                                    <select name="major" class="Floating-input">
+                                                        {% for x in major_list %}
+                                                        <option value="{{ x }}">{{ x }}</option>
+                                                        {% endfor %}
+                                                    </select >
+                                                    <p>班级</p><select name="class_grade" class="Floating-input">
+                                                    {% for x in class_grade_list %}
+                                                    <option value="{{ x }}">{{ x }}</option>
+                                                    {% endfor %}
+                                                    </select>
+                                                    <p>电话</p><input type="text" name="phone" class="Floating-input">
+                                                </div>
+                                                <div class="modal-footer" style="margin-top:30px;">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                    <input type="submit" name="add" value="Submit" class="btn btn-primary">
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
+                               </div>
+                            </div>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-6 -->           
+            </div>
+{% endblock %}
+
+{% block script %}
+    <!-- jQuery -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="{% static 'js/metisMenu.min.js' %}"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.responsive.js' %}"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{% static 'js/sb-admin-2.js' %}"></script>
+
+    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+    <script>
+    $(document).ready(function() {
+        $('#dataTables-example').DataTable({
+            responsive: true,
+			bLengthChange:true,
+			aLengthMenu:[5,10],
+        });
+    });
+     function updata(obj,x){
+        var table=document.getElementById("dataTables-example");
+        console.log(table);
+        for(var i=0;i<table.rows[x].cells.length-1;i++){
+            console.log(table.rows[x].cells[i].innerHTML);
+            var text = table.rows[x].cells[i].innerText;
+            table.rows[x].cells[i].innerHTML = '<input class="form-control" name="input'+ x + '" type="text" value=""/>';
+            var input = document.getElementsByName("input" + x);
+            input[i].value = text;
+            input[0].focus();
+            input[0].select();     
+        }
+        obj.innerHTML = '<li class="glyphicon glyphicon-ok"></li>';
+        obj.onclick = function onclick(event) {update_success(this,x)};
+    }
+    function update_success(obj,x){
+        var arr = [];
+        var table = document.getElementById("dataTables-example");
+        var input = document.getElementsByName("input" + x);
+        for(var i=0;i<table.rows[x].cells.length-1;i++){
+        var text = input[i].value;
+        arr.push(text);
+        }
+		window.location.href=""
+        $.ajax({  
+            url: '',  
+            tradiotional: true,
+            data: {arr: arr, option: "edit"},
+            dataType: "json",  
+            type: "POST",  
+            success: function (data) {  
+            console.log('Ok');
+            }    
+        });  
+    }
+	function dele(obj, x){
+		var table=document.getElementById("dataTables-example");
+		var number=table.rows[x].cells[0].innerText;
+		window.location.href=""
+        $.ajax({  
+            url: '',  
+            tradiotional: true,
+            data: {number: number, option: "delete"},
+            dataType: "json",  
+            type: "POST",  
+        });  
+	}
+		function row(x){
+				var table=document.getElementById("dataTables-example");
+						for(var i=1;i<table.rows.length;i++){
+									if(table.rows[i].cells[0].innerText==x)
+													return i;
+															}
+																}
+    </script>
+{% endblock %}

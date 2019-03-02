@@ -1,0 +1,238 @@
+{% extends 'dorm/base.html' %}
+{% load static %}
+
+{% block head %}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Search</title>
+
+<!-- Bootstrap Core CSS -->
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+<!-- MetisMenu CSS -->
+<link href="{% static 'css/metisMenu.min.css' %}" rel="stylesheet">
+
+<!-- DataTables CSS -->
+<link href="{% static 'css/dataTables.bootstrap.css' %}" rel="stylesheet">
+
+<!-- DataTables Responsive CSS -->
+<link href="{% static 'css/dataTables.responsive.css' %}" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+
+<style>
+	span {
+		font-size:20px;
+	}
+    p {
+    	display: inline;
+		width: 40px;
+		height: 10px;
+    }
+    .Searchinput {
+    	display: inline;
+    }
+    .Limitinput {
+    	display: inline;
+    }
+	.Searchinputs {
+		display: inline;
+		width: 80%;
+		margin: 0 auto;
+	}
+	.Searchinputs input[type=text] {
+		width: 17%;
+		height: 38px;
+		margin: 5px;
+		border: 1px solid #ddd;
+		border-radius: 3px;
+	}
+	.Limitinput input[type=text] {
+		width: 12.6%;
+		height: 38px;
+		margin: 5px;
+		border: 1px solid #ddd;
+		border-radius: 3px;
+	}
+	.Searchinputs select {
+		width: 17%;
+	    height: 38px;
+	    margin: 5px;
+	    border: 1px solid #ddd;
+	    border-radius: 3px;
+	}
+</style>
+
+{% endblock %}
+
+{% block h1 %}Dormitory search{% endblock %}
+
+{% block content %}
+<div>
+	<form action="" method="get">
+	<div class="Searchinputs">
+	<div>
+		<div class="Searchinput">
+			<p >宿舍楼:</p>
+			<input name="building_number" type="text" value="{{ building_number }}">
+		</div>
+		<div class="Searchinput">
+			<p>住宿对象:</p>
+			<select name="sex" type="text" value="{{ sex }}">
+				<option></option>}
+				<option value="男">男</option>
+				<option value="女">女</option>
+			</select>
+	    </div>
+	    <div class="Searchinput">
+	    	<p>宿舍号:</p>
+			<input name="room_number" type="text" value="{{ room_number }}">
+		</div>
+		</div>
+		<div style="display:inline">
+			<div class="Limitinput">
+		    	<p>可住人数:</p>
+				<input name="volume_min" type="text" value="{{ volume_min }}">
+				<span>~</span>
+				<input name="volume_max" type="text" value="{{ volume_max }}">
+			</div>
+			<div class="Limitinput">
+		    	<p>剩余容量:</p>
+				<input name="free_min" type="text" value="{{ free_min }}">
+				<span>~</span>
+				<input name="free_max" type="text" value="{{ free_max }}">
+			</div>
+		</div>
+	</div>
+	<input type="submit" class="btn btn-default" onclick="Visilize()" value="Search">
+	</form>
+	<div class="col-lg-6" style="position: relative; right: 14px; top: 10px; width: 90%;">
+        <div class="panel panel-default">
+        	<div class="panel-heading">
+                 Content
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+					{% if room_list %}
+					<table class="table table-striped table-bordered table-hover" id="dataTables-example" style="">
+						<thead>
+							<tr>
+								<td>宿舍楼</td>
+								<td>住宿对象</td>
+								<td>宿舍号</td>
+								<td>可住人数</td>
+								<td>剩余容量</td>
+								{% ifequal kind 'dormadmin' %}
+								<td>操作</td>
+								{% endifequal %}
+							</tr>
+						</thead>
+						<tbody>
+							{% for y in room_list %}
+						    <tr class="">
+								<td>{{ y.building_number.number }}</td>
+								<td>{{ y.building_number.sex }}</td>
+								<td><a href="{% url 'dorm:DormSearchDetail' y.building_number.number y.number %}">{{ y.number }}</a></td>
+								<td>{{ y.volume }}</td>
+							    <td>{{ y.free }}</td>
+								{% ifequal kind 'dormadmin' %}
+								<td>
+									<button class="btn btn-default" style="padding:1px 3px;margin:0px 3px;" onclick="updata(this,row({{ y.building_number.number }}, {{ y.number }}))">
+										<li class="glyphicon glyphicon-pencil" style="margin:3px;"> </li>
+									</button>
+								</td>
+								{% endifequal %}
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script src="{% static 'js/metisMenu.min.js' %}"></script>
+
+<!-- DataTables JavaScript -->
+<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'js/dataTables.responsive.js' %}"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+<script>
+	function Visilize()
+	{
+		var table=document.querySelector("#dataTables-example");
+		console.log(table);
+		table.style.visibility="visible";
+	}
+    $(document).ready(function() {
+        $('#dataTables-example').DataTable({
+            responsive: true,
+			bLengthChange:true,
+			aLengthMenu:[5,10],
+        });
+    });
+     function updata(obj,x){
+        var table=document.getElementById("dataTables-example");
+        console.log(table);
+        for(var i=0;i<table.rows[x].cells.length-1;i++){
+            console.log(table.rows[x].cells[i].innerHTML);
+            var text = table.rows[x].cells[i].innerText;
+            table.rows[x].cells[i].innerHTML = '<input class="form-control" name="input'+ x + '" type="text" value=""/>';
+            var input = document.getElementsByName("input" + x);
+            input[i].value = text;
+            input[0].focus();
+            input[0].select();     
+        }
+        obj.innerHTML = '<li class="glyphicon glyphicon-ok"></li>';
+        obj.onclick = function onclick(event) {update_success(this,x)};
+    }
+    function update_success(obj,x){
+	console.log(x);
+        var arr = [];
+        var table = document.getElementById("dataTables-example");
+        var input = document.getElementsByName("input" + x);
+        for(var i=0;i<table.rows[x].cells.length-1;i++){
+        var text = input[i].value;
+        arr.push(text);
+        }
+		window.location.href=""
+        $.ajax({  
+            url: '',  
+            tradiotional: true,
+            data: {arr: arr, option: "edit"},
+            dataType: "json",  
+            type: "POST",  
+            success: function (data) {  
+            console.log('Ok');
+            }    
+        });  
+    }
+		function row(x,y){
+				var table=document.getElementById("dataTables-example");
+						for(var i=1;i<table.rows.length;i++){
+									if(table.rows[i].cells[0].innerText==x && table.rows[i].cells[2].innerText==y)
+													return i;
+															}
+																}
+</script>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'dorm/base.html' %}
+{% load static %}
+{% block head %}
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<title>Personal_information</title>
+
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    
+  <!--   MetisMenu CSS -->
+    <link href="{% static 'css/metisMenu.min.css' %}" rel="stylesheet">
+    
+  <!--   DataTables CSS -->
+    <link href="{% static 'css/dataTables.bootstrap.css' %}" rel="stylesheet">
+    
+   <!--  DataTables Responsive CSS -->
+    <link href="{% static 'css/dataTables.responsive.css' %}" rel="stylesheet">
+    
+   <!--  Custom CSS -->
+    <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+    
+   <!--  Custom Fonts -->
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        #in {
+display: block;
+    width: 50%;
+	    height: 38px;
+		    border-radius: 5px;
+		
+        }
+        p {
+            display: inline;
+            position: relative;
+        }
+    </style>
+{% endblock %}
+{% block h1 %}Person info{% endblock %}
+{% block content %}
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Message
+                        </div>
+                        <!-- /.panel-heading -->
+						<form action="" method="post">
+                        <div class="panel-body" style="position: relative;left: 14%;">
+                            <ul >
+                                <p>姓名:</p><input id="in" type="text" name="name" value="{{ user.name }}">
+                                <p>身份证:</p><input id="in" type="text" name="idcard" value="{{ user.idcard }}">
+                                <p>电话:</p><input id="in" type="text" name="phone" value="{{ user.phone }}">
+                                <p>性别:</p><input id="in" type="text" name="sex" value="{{ user.sex }}">
+                            </ul>
+                        </div>
+                        <input type="submit" value="Save" class="btn btn-default" style="position: relative;
+                        left:85%;bottom:10px;">
+						</form>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
+{% block script %}
+    <!-- jQuery -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script src="{% static 'js/metisMenu.min.js' %}"></script>
+<!-- Custom Theme JavaScript -->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+    <script>
+        var lis=document.querySelectorAll(".Person");
+        console.log(lis);
+        console.log(lis.length);
+        for(i=0;i<lis.length;i++){
+            lis[i].innerHTML='<input class="form-control" name="input'+lis[i].innerText+  '" type="text" value=""/>';
+        }
+        function submit() {
+            window.location.href="";
+        }
+    </script>
+{% endblock %}

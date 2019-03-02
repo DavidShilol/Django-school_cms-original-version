@@ -1,0 +1,39 @@
+{% extends 'dorm/base.html' %}
+{% load static %}
+
+{% block head %}
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	
+	<title>Home</title>
+	
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+	<link href="{% static 'css/metisMenu.min.css' %}" rel="stylesheet">
+	<link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+	<link href="{% static 'css/morris.css' %}" rel="stylesheet">
+	<link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block h1 %}Dashboard{% endblock %}
+
+{% block content %}
+<a>教师{{ name }}，你好！</a>
+<a href="{% url 'dorm:logout' %}"><input type="button" value="登出"></a>
+{% endblock %}
+
+{% block script %}
+	<!-- jQuery -->
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	
+	<!-- Bootstrap Core JavaScript -->
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	
+	<!-- Metis Menu Plugin JavaScript -->
+	<script src="{% static 'js/metisMenu.min.js' %}"></script>
+	
+	<!-- Custom Theme JavaScript -->
+	<script src="{% static 'js/sb-admin-2.js' %}"></script>
+{% endblock %}

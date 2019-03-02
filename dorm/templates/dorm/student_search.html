@@ -1,0 +1,209 @@
+{% extends 'dorm/base.html' %}
+{% load static %}
+
+{% block head %}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Search</title>
+
+<!-- Bootstrap Core CSS -->
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+<!-- MetisMenu CSS -->
+<link href="{% static 'css/metisMenu.min.css' %}" rel="stylesheet">
+
+<!-- DataTables CSS -->
+<link href="{% static 'css/dataTables.bootstrap.css' %}" rel="stylesheet">
+
+<!-- DataTables Responsive CSS -->
+<link href="{% static 'css/dataTables.responsive.css' %}" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+
+<style>
+    p {
+    	display: inline;
+		width: 40px;
+		height: 10px;
+    }
+    .Searchinput {
+    	display: inline;
+    }
+	.Searchinputs {
+		display: inline;
+		width: 80%;
+		margin: 0 auto;
+	}
+	.Searchinputs input[type=text] {
+		width: 17%;
+		height: 38px;
+		margin: 5px;
+		border: 1px solid #ddd;
+		border-radius: 3px;
+	}
+</style>
+
+{% endblock %}
+
+{% block h1 %}Search View{% endblock %}
+
+{% block content %}
+<div>
+	<form action="" method="get">
+	<div class="Searchinputs">
+		<div class="Searchinput">
+			<p >姓名:</p>
+			<input name="student_name" type="text" value="{{ student_name }}">
+		</div>
+		<div class="Searchinput">
+			<p>学号:</p>
+			<input name="number" type="text" value="{{ number }}">
+	    </div>
+	    <div class="Searchinput">
+	    	<p>教师姓名:</p>
+			<input name="teacher_name" type="text" value="{{ teacher_name }}">
+		</div>
+	</div>
+	<input type="submit" class="btn btn-default" onclick="Visilize()" value="Search">
+	</form>
+	<div class="col-lg-6" style="position: relative; right: 14px; top: 10px; width: 90%;">
+        <div class="panel panel-default">
+        	<div class="panel-heading">
+                 Content
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+					{% if student_list %}
+					<table class="table table-striped table-bordered table-hover" id="dataTables-example" style="">
+						<thead>
+							<tr>
+								<td>学号</td>
+								<td>姓名</td>
+								<td>性别</td>
+								<td>民族</td>
+								<td>专业</td>
+								<td>班级</td>
+								<td>电话</td>
+								<td>宿舍楼</td>
+								<td>宿舍号</td>
+								<td>教师</td>
+								{% ifequal kind 'dormadmin' %}
+								<td>操作</td>
+								{% endifequal %}
+							</tr>
+						</thead>
+						<tbody>
+							{% for x in student_list %}
+							{% for y in x %}
+						    <tr class="">
+								<td>{{ y.number }}</td>
+								<td>{{ y.name }}</td>
+								<td>{{ y.sex }}</td>
+								<td>{{ y.nation }}</td>
+							    <td>{{ y.major }}</td>
+							    <td>{{ y.class_grade }}</td>
+								<td>{{ y.phone }}</td>
+								<td>{{ y.room_number.building_number.number }}</td>
+								<td>{{ y.room_number.number }}</td>
+								<td>{{ y.teacher.name }}</td>
+								{% ifequal kind 'dormadmin' %}
+								<td>
+									<button class="btn btn-default" style="padding:1px 3px;margin:0px 3px;" onclick="updata(this,row({{ y.number }}))">
+										<li class="glyphicon glyphicon-pencil" style="margin:3px;"> </li>
+									</button>
+								</td>
+								{% endifequal %}
+							</tr>
+							{% endfor %}
+							{% endfor %}
+						</tbody>
+					</table>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script src="{% static 'js/metisMenu.min.js' %}"></script>
+
+<!-- DataTables JavaScript -->
+<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'js/dataTables.responsive.js' %}"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+<script>
+	function Visilize()
+	{
+		var table=document.querySelector("#dataTables-example");
+		console.log(table);
+		table.style.visibility="visible";
+	}
+    $(document).ready(function() {
+        $('#dataTables-example').DataTable({
+            responsive: true,
+			blengthChange:true,
+			aLengthMenu:[5,10],
+        });
+    });
+     function updata(obj,x){
+        var table=document.getElementById("dataTables-example");
+        console.log(table);
+        for(var i=0;i<table.rows[x].cells.length-1;i++){
+            console.log(table.rows[x].cells[i].innerHTML);
+            var text = table.rows[x].cells[i].innerText;
+            table.rows[x].cells[i].innerHTML = '<input class="form-control" name="input'+ x + '" type="text" value=""/>';
+            var input = document.getElementsByName("input" + x);
+            input[i].value = text;
+            input[0].focus();
+            input[0].select();     
+        }
+        obj.innerHTML = '<li class="glyphicon glyphicon-ok"></li>';
+        obj.onclick = function onclick(event) {update_success(this,x)};
+    }
+    function update_success(obj,x){
+        var arr = [];
+        var table = document.getElementById("dataTables-example");
+        var input = document.getElementsByName("input" + x);
+        for(var i=0;i<table.rows[x].cells.length-1;i++){
+        var text = input[i].value;
+        arr.push(text);
+        }
+		window.location.href=""
+        $.ajax({  
+            url: '',  
+            tradiotional: true,
+            data: {arr: arr, option: "edit"},
+            dataType: "json",  
+            type: "POST",  
+            success: function (data) {  
+            console.log('Ok');
+            }    
+        });  
+    }
+		function row(x){
+				var table=document.getElementById("dataTables-example");
+						for(var i=1;i<table.rows.length;i++){
+									if(table.rows[i].cells[0].innerText==x)
+													return i;
+															}
+																}
+</script>
+{% endblock %}
